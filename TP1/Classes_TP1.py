@@ -3,41 +3,52 @@ import datetime
 class Date:
 
     def __init__(self, date):
-        split_date = date.split('/')
-        self.date = split_date
+        self.date = date
 
     def __eq__(self, obj):
         flag = True
         i = 0
+
+        self_date = self.date.split('/')
+        obj_date = obj.date.split('/')
+
         while i < 3 and flag:
-            if self.date[i] != obj.date[i]:
+            if self_date[i] != obj_date[i]:
                 flag = False
             else: i += 1
-        if flag:
-            print('Les dates sont les memes')
-        else: print('Les dates sont differentes')
+        #if flag:
+        #    print('Les dates sont les memes')
+        #else: print('Les dates sont differentes')
+        return flag
 
     def __lt__(self, obj):
-        flag = True
-        i = 0
+        self_date = self.date.split('/')
+        obj_date = obj.date.split('/')
 
-        while i < 3 and flag:
-            if self.date[i] >= obj.date[i]:
-                flag = False
-            else: i += 1
-
-        if flag:
-            print('True')
-        else: print('False')
-
-    def set_dates(self, date):
-        split_date = date.split('/')
-        self.date = split_date
+        if self_date[2] < obj_date[2]:
+            return True
+        elif self_date[2] > obj_date[2]:
+            return False
+        else:
+            if self_date[1] < obj_date[1]:
+                return True
+            if self_date[1] > obj_date[1]:
+                return False
+            else:
+                if self_date[0] < obj_date[0]:
+                    return True
+                elif self_date[0] > obj_date[0]:
+                    return False
+                else:
+                    return False
+        #if flag:
+        #   print('True')
+        #else: print('False')
 
     def get_dates(self):
         return self.date
 
-    date = property(get_dates, set_dates)
+    date = property(get_dates)
 
 
 class Etudiant:

@@ -1,41 +1,61 @@
-#print("Hello world!")
+import Classes_TP1
 
-file = False
+Filecontent = False
 name_file = False
 flag = True
+date = Date("01/01/1900")
+
+#print("Bonjour le monde!")
 
 menu =  "1. Choisir un nom de fichier", "2. Ajouter un texte", "3. Afficher le fichier complet", \
         "4. Vider le fichier", "9. Quitter le programme"
 
-## On cycle jusqu'a ce que l'utilisateur choisisse d'arreter l'application
+## On parcoure jusqu'a ce que l'utilisateur choisisse d'arreter l'application
 while flag:
     for choice in menu:
         print(choice)
 
-    print('Veuillez selectionner une action a effectuer:')
+    print('Choisir une action :')
+#C:\Users\rapha\Desktop\TP1_Python_DI5\fichetu.csv
+    saisie = input("Action: ")
 
-    sel = input("Action: ")
+    choix = int(saisie)
 
-    while sel%2 != 0 and sel%2 != 1:
-        print("La selection est incorrecte. Veuillez recommencer!")
-        sel = input("Action: ")
+    if choix == 1:
+        name_file = input('Fichier a ouvrir: ')
 
-    if sel == 1:
-        filename = input('Fichier a ouvrir: ')
-        name_file = filename
-        file = open(filename, "at")
-    if file != False:
-        if sel == 2:
+    elif name_file is not False:
+        if choix == 2:
+            file = open(name_file, "at")
             content = input()
             file.write(content+"\n")
-        if sel == 3:
-            file.read()
-        if sel == 4:
-            file.close
-            file = open(name_file, "w").close
-            file = open(name_file, "at")
-        if sel == 9:
-            file.close
+
+        if choix == 3:
+            file = open(name_file, "rt")
+            Filecontent = file.read()
+            print("\n")
+            if Filecontent is not False:
+                Filecontent = Filecontent.split("\n")
+
+                for line in Filecontent:
+                    print(line)
+                    InfoArray = line.split(";")
+                    print(InfoArray)
+
+            else:
+                print("Impossible de lire le contenu du fichier")
+
+        if choix == 4:
+            file = open(name_file, "w")
+
+        if choix == 9:
             flag = False
 
+        file.close()
+    else:
+        print("Action non gérée!")
+
+    print("\n\n")
+
 print("Fermeture de l'application...")
+file.close()
