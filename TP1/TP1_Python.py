@@ -1,9 +1,8 @@
-import Classes_TP1
+from Classes_TP1 import *
 
 Filecontent = False
 name_file = False
 flag = True
-date = Date("01/01/1900")
 
 #print("Bonjour le monde!")
 
@@ -16,7 +15,7 @@ while flag:
         print(choice)
 
     print('Choisir une action :')
-#C:\Users\rapha\Desktop\TP1_Python_DI5\fichetu.csv
+#C:\Users\rapha\Desktop\TPs_Python\TP1\fichetu.csv
     saisie = input("Action: ")
 
     choix = int(saisie)
@@ -33,15 +32,16 @@ while flag:
         if choix == 3:
             file = open(name_file, "rt")
             Filecontent = file.read()
-            print("\n")
             if Filecontent is not False:
+                list_student = list()
                 Filecontent = Filecontent.split("\n")
 
                 for line in Filecontent:
-                    print(line)
-                    InfoArray = line.split(";")
-                    print(InfoArray)
-
+                    if len(line) > 0:
+                            InfoArray = line.split(";")
+                            student = Etudiant(InfoArray[0], InfoArray[1], Date(InfoArray[2]))
+                            list_student.append(student)
+                print(list_student)
             else:
                 print("Impossible de lire le contenu du fichier")
 
@@ -55,7 +55,7 @@ while flag:
     else:
         print("Action non gérée!")
 
-    print("\n\n")
+    print("\n")
 
 print("Fermeture de l'application...")
 file.close()
