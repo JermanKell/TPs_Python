@@ -23,3 +23,5 @@ class Parser:
         self._file.close()
 
         return _varToReturn
+
+
