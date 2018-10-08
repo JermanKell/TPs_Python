@@ -4,7 +4,7 @@ class Parser:
         self._file = None
 
     def read_file(self, name_file):
-        self._file = open(name_file, 'rt')
+        self._file = open(name_file, "rt")
 
         credentials = self._file.read()
         self._file.close()
@@ -12,7 +12,14 @@ class Parser:
         return credentials
 
     def write_file(self, name_file, credentials):
-        self._file = open(name_file, 'wt')
+        _varToReturn = None
+        self._file = open(name_file, "wt")
 
-        self._file.write(credentials)
+        if self._file.write(credentials) > 0:
+            _varToReturn = 1
+        else:
+            _varToReturn = 0
+
         self._file.close()
+
+        return _varToReturn
