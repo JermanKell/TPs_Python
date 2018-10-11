@@ -109,36 +109,43 @@ class Authentication:
     def _fileprocess(self):
         if self._connectionState.get() != "Not connected":
             window = Tk()
+            window.title("File processing")
+
+            FileToOpenPath = NONE
+            FileToSavePath = NONE
 
             # Methodes anonymes a lancer par l'appli
             def selectfile():
                 dialog = filedialog.askopenfilename(title="Select a file", filetypes=[('Text files', '.txt')])
-                filePath.set(dialog)
+                FileToOpenPath = dialog
+                messagebox.showinfo("Info", "File to open: " + FileToOpenPath)
 
             def savefile():
                 dialog = filedialog.asksaveasfile(title="Save as ...", filetypes=[('Text files', '.txt')])
-                filePathDest.set(dialog.name)
+                FileToSavePath = dialog.name
+                messagebox.showinfo("Info", "File to save: " + FileToSavePath)
 
             def encryption():
-                toto = "coucou"
+                print(var_options)
 
             window.title("Files processing")
-            labelStart = Label(window, text='Select a file to encrypt').grid(row=0)
-            filePath = StringVar()
-            labelFilePath = Label(window, textvariable=filePath).grid(row=1, column=0)
+            labelStart = Label(window, text='Select a file to encrypt').pack() #grid(row=0)
+            openFileButton = Button(window, text="Open file", command=selectfile).pack() #.grid(row=1, column=0)
 
-            openFileButton = Button(window, text="Open file", command=selectfile).grid(row=1, column=1)
+            labelEnd = Label(window, text='Select the destination file').pack() #.grid(row=3)
 
-            labelEnd = Label(window, text='Select the destination file').grid(row=3)
-            filePathDest = StringVar()
-            labelFileDestPath = Label(window, textvariable=filePathDest).grid(row=4, column=0)
+            saveFileButton = Button(window, text="Save file", command=savefile).pack() #.grid(row=4, column=0)
 
-            saveFileButton = Button(window, text="Save file", command=savefile).grid(row=4, column=1)
+            encryptLab = Label(window, text="Encryption").pack() #.grid(row=8, column=0)
+            encryptButton = Button(window, text="Go!", command=encryption).pack() #.grid(row=8, column=1)
 
-            encryptLab = Label(window, text="Encryption").grid(row=6, column=0)
-            encryptButton = Button(window, text="Go!", command=encryption).grid(row=6, column=1)
+            option1 = Radiobutton(window, text="To encode", value="1")
+            option2 = Radiobutton(window, text="To decode", value="2")
 
-            ## Trouver commande pour passer cette fenetre en mainWindow
+            option1.pack() #.grid(row=6, column=0)
+            option2.pack()
+
+            # Affichage et traitement du graphique
             window.mainloop()
 
         else: messagebox.showerror("Error", "You must be connected to run this feature!")
