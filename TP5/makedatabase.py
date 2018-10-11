@@ -86,13 +86,15 @@ def sum_total_pop_region():
 def list_department_com():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute('SELECT nom_com, code_dpt FROM Communes GROUP BY nom_com ORDER BY nom_com DESC')
+    c.execute('SELECT nom_com, code_dpt FROM Communes WHERE nom_com IN (SELECT nom_com FROM Communes GROUP BY nom_com HAVING COUNT(*) > 1) ORDER BY nom_com ASC')
     for row in c:
         print(row)
     c.close()
 
-create_database()
-fill_database()
+
+
+#create_database()
+#fill_database()
 #sum_total_pop_department()
 #sum_total_pop_region()
-list_department_com()
+#list_department_com()
