@@ -76,11 +76,13 @@ class Authentication:
     def _check_connection(self):
         _credentials = self._Parser.read_file(self._credentials_file)
         _credentials_auth = "poly" + self._LoginEntry.get() + self._PwdEntry.get()
+        _cred_tmp = hashlib.sha256(_credentials_auth.encode()).digest()
         _credentials_auth = hashlib.sha256(_credentials_auth.encode()).hexdigest()
+
 
         ## on verifie que les labels ne sont pas vides
         if _credentials_auth == _credentials:
-            self._EncDec.setKey(_credentials_auth)
+            self._EncDec.setKey(_cred_tmp)
             messagebox.showinfo("Info", 'You are connected !')
             self._connectionState.set(self._LoginEntry.get())
             self._UserPwd = self._PwdEntry.get()
