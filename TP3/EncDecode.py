@@ -1,4 +1,5 @@
 import Cryptodome.Cipher.AES as AES
+from Cryptodome import Random
 
 
 class EncoDecode:
@@ -7,7 +8,8 @@ class EncoDecode:
 
     def setKey(self, key):
         self._Key=key
-        self._aes = AES.new(self._Key, AES.MODE_CBC, len(self._Key))
+        generatedValue = Random.new().read(AES.block_size)
+        self._aes = AES.new(self._Key, AES.MODE_CBC, generatedValue)
 
     def Encode(self, dataToEncode):
         encMsg = self._aes.encrypt(dataToEncode)
@@ -18,3 +20,4 @@ class EncoDecode:
         decMsg = self._aes.decrypt(dataToDecode)
 
         return decMsg
+

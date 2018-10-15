@@ -76,7 +76,7 @@ class Authentication:
     def _check_connection(self):
         _credentials = self._Parser.read_file(self._credentials_file)
         _credentials_auth = "poly" + self._LoginEntry.get() + self._PwdEntry.get()
-        _credentials_auth = hashlib.sha512(_credentials_auth.encode()).hexdigest()
+        _credentials_auth = hashlib.sha256(_credentials_auth.encode()).hexdigest()
 
         ## on verifie que les labels ne sont pas vides
         if _credentials_auth == _credentials:
@@ -95,7 +95,7 @@ class Authentication:
     def _register_account(self):
         # On encode le couple et on ajoute une partie fixe
         _crendentials_aut = "poly" + self._SULoginEntry.get() + self._SUPwdEntry.get()
-        _crendentials_aut = hashlib.sha512(_crendentials_aut.encode()).hexdigest()
+        _crendentials_aut = hashlib.sha256(_crendentials_aut.encode()).hexdigest()
 
         _result = self._Parser.write_file(self._credentials_file, _crendentials_aut)
 
