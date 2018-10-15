@@ -8,7 +8,7 @@ def create_database():
                  (code_dpt text, code_com text, nom_com text, pop_tot integer)''')
 
     c.execute('''CREATE TABLE if not exists Departements
-                 (code_dpt text, nom_dpt text, code_reg text)''')
+                 (code_dpt text, nom_dpt text, code_rg text)''')
 
     c.execute('''CREATE TABLE if not exists Region
                  (code_reg text, nom_reg text)''')
@@ -91,10 +91,57 @@ def list_department_com():
         print(row)
     c.close()
 
+def modify_database():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE if not exists NouvellesRegions
+                 (code_geo integer, lib_geo text)''')
+
+    file_name = '''bdd/zones-2016.csv'''
+    file = open(file_name, "rt")
+    file_content = file.read()
+    file_content = file_content.split("\n")
+
+    #Récupère uniquement les lignes REG du fichier
+    for line in file_content:
+        if len(line) > 0:
+            data_array = line.split(";")
+            if len(data_array[0]) > 0:
+                if data_array[0].__eq__('REG'):
+                    c.execute("insert into NouvellesRegions values (?, ?)", (data_array[1], data_array[2]))
+    file.close()
+
+    c.execute('ALTER TABLE Departements ADD COLUMN code_nouv_reg interger')
+    file_name = '''bdd/communes-2016.csv'''
+
+    file = open(file_name, "rt")
+    file_content = file.read()
+    file_content = file_content.split("\n")
+
+    del file_content[0:7]
+
+    departements_updated = []
+    for line in file_content:
+        if len(line) > 0:
+            data_array = line.split(";")
+            if len(data_array[0]) > 0:
+                if not data_array[2] in departements_updated:
+                    c.execute('update Departements set code_nouv_reg = ' + data_array[3] + ' where code_dpt = \'' + data_array[2] + '\'')
+                    departements_updated.append(data_array[2])
+    file.close()
+
+    #c.execute('SELECT code_reg, SUM(pop_tot) FROM Communes INNER JOIN Departements on Departements.code_dpt = Communes.code_dpt GROUP BY code_reg')
+    for row in c:
+        print(row)
+    c.close()
+
+    conn.commit()
+    conn.close()
 
 
-#create_database()
-#fill_database()
+create_database()
+fill_database()
 #sum_total_pop_department()
 #sum_total_pop_region()
 #list_department_com()
+modify_database()
