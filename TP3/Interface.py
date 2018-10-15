@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 
 from TP3.Parser import *
+from TP3.EncDecode import *
 import hashlib
 
 class Authentication:
@@ -13,6 +14,7 @@ class Authentication:
 
         # Declaration d'une nouvelle instance de parseur
         self._Parser = Parser()
+        self._EncDec = EncoDecode()
 
 
         # Champ ou le login sera ecrit (Connexion)
@@ -78,6 +80,7 @@ class Authentication:
 
         ## on verifie que les labels ne sont pas vides
         if _credentials_auth == _credentials:
+            self._EncDec.setKey(_credentials_auth)
             messagebox.showinfo("Info", 'You are connected !')
             self._connectionState.set(self._LoginEntry.get())
             self._UserPwd = self._PwdEntry.get()
@@ -111,39 +114,52 @@ class Authentication:
             window = Tk()
             window.title("File processing")
 
-            FileToOpenPath = NONE
-            FileToSavePath = NONE
+            self._FileToOpenPath = NONE
+            self._FileToSavePath = NONE
 
             # Methodes anonymes a lancer par l'appli
             def selectfile():
                 dialog = filedialog.askopenfilename(title="Select a file", filetypes=[('Text files', '.txt')])
-                FileToOpenPath = dialog
-                messagebox.showinfo("Info", "File to open: " + FileToOpenPath)
+                self._FileToOpenPath = dialog
+                messagebox.showinfo("Info", "File to open: " + self._FileToOpenPath)
 
             def savefile():
                 dialog = filedialog.asksaveasfile(title="Save as ...", filetypes=[('Text files', '.txt')])
-                FileToSavePath = dialog.name
-                messagebox.showinfo("Info", "File to save: " + FileToSavePath)
+                self._FileToSavePath = dialog.name
+                messagebox.showinfo("Info", "File to save: " + self._FileToSavePath)
 
-            def encryption():
-                print(var_options)
+            def encode():
+                _dataToEncode = None
+
+                if self._FileToOpenPath is not None and self._FileToSavePath is not None:
+                    _dataToEncode = self._Parser.read_file(self._FileToOpenPath)
+                    if _dataToEncode is not None:
+                        _encData = self._EncDec.Encode(_dataToEncode)
+                        self._Parser.write_file(self._FileToSavePath, _encData)
+                else:
+                    messagebox.showerror("Error", "Unable to process on a non existing file!")
+
+            def decode():
+                _dataToDecode = None
+
+                if self._FileToOpenPath is not None and self._FileToSavePath is not None:
+                    _dataToDecode = self._Parser.read_file(self._FileToOpenPath)
+                    if _dataToDecode is not None:
+                        __decData = self._EncDec.Decode(_dataToDecode)
+                        self._Parser.write_file(self._FileToSavePath, __decData)
+
+                else:
+                    messagebox.showerror("Error", "Unable to process on a non existing file!")
 
             window.title("Files processing")
-            labelStart = Label(window, text='Select a file to encrypt').pack() #grid(row=0)
-            openFileButton = Button(window, text="Open file", command=selectfile).pack() #.grid(row=1, column=0)
+            labelStart = Label(window, text='Select a file to encrypt').grid(row=0)
+            openFileButton = Button(window, text="Open file", command=selectfile).grid(row=1, column=0)
 
-            labelEnd = Label(window, text='Select the destination file').pack() #.grid(row=3)
+            labelEnd = Label(window, text='Select the destination file').grid(row=3)
+            saveFileButton = Button(window, text="Save file", command=savefile).grid(row=4, column=0)
 
-            saveFileButton = Button(window, text="Save file", command=savefile).pack() #.grid(row=4, column=0)
-
-            encryptLab = Label(window, text="Encryption").pack() #.grid(row=8, column=0)
-            encryptButton = Button(window, text="Go!", command=encryption).pack() #.grid(row=8, column=1)
-
-            option1 = Radiobutton(window, text="To encode", value="1")
-            option2 = Radiobutton(window, text="To decode", value="2")
-
-            option1.pack() #.grid(row=6, column=0)
-            option2.pack()
+            EncButton = Button(window, text="To encode!", command=encode).grid(row=8, column=0)
+            DecButton = Button(window, text="To decode!", command=decode).grid(row=8, column=1)
 
             # Affichage et traitement du graphique
             window.mainloop()
