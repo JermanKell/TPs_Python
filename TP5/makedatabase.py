@@ -8,7 +8,7 @@ def create_database():
                  (code_dpt text, code_com text, nom_com text, pop_tot integer)''')
 
     c.execute('''CREATE TABLE if not exists Departements
-                 (code_dpt text, nom_dpt text, code_rg text)''')
+                 (code_dpt text, nom_dpt text, code_reg text)''')
 
     c.execute('''CREATE TABLE if not exists Region
                  (code_reg text, nom_reg text)''')
@@ -95,7 +95,7 @@ def modify_database():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE if not exists NouvellesRegions
-                 (code_geo integer, lib_geo text)''')
+                 (code_nouv_reg integer, lib_geo text)''')
 
     file_name = '''bdd/zones-2016.csv'''
     file = open(file_name, "rt")
@@ -130,7 +130,9 @@ def modify_database():
                     departements_updated.append(data_array[2])
     file.close()
 
-    #c.execute('SELECT code_reg, SUM(pop_tot) FROM Communes INNER JOIN Departements on Departements.code_dpt = Communes.code_dpt GROUP BY code_reg')
+    c.execute('SELECT NouvellesRegions.code_nouv_reg, lib_geo, SUM(pop_tot) FROM NouvellesRegions '
+              'INNER JOIN Departements on Departements.code_nouv_reg = NouvellesRegions.code_nouv_reg '
+              'INNER JOIN Communes on Communes.code_dpt = Departements.code_dpt GROUP BY NouvellesRegions.code_nouv_reg')
     for row in c:
         print(row)
     c.close()
