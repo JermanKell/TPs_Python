@@ -2,7 +2,7 @@ from PIL.Image import *
 import PIL.Image
 import numpy
 from AntClass import Direction
-from threading import Thread
+from threading import Thread, RLock
 
 def instance_painting(x, y, name_image):
     painting = PIL.Image.new('RGB', (x, y), color=(255, 255, 255))
@@ -86,11 +86,11 @@ def neighbour_pixel_location(painting_size, ant_location):
     return pixel_left_neighbour, pixel_right_neighbour, pixel_ahead_neighbour
 
 
-def run_ant(painting, write_color, follow_color, prob_move, prob_follow_color, nb_step):
+def run_ant(painting, write_color, follow_color, prob_move, prob_follow_color, nb_step, lock):
     location_pixel = location_ant_start(painting.size[0], painting.size[1])
     print(location_pixel)
-    color_pixel_3x3(plateau, (location_pixel[1], location_pixel[2]), (30, 120, 100))
-    Image.show(plateau)
+    with lock:
+        color_pixel_3x3(plateau, (location_pixel[1], location_pixel[2]), write_color)
 
 
     #for i in range(nb_step):
@@ -103,6 +103,19 @@ def run_ant(painting, write_color, follow_color, prob_move, prob_follow_color, n
     #    else:
     #        direction = numpy.random.choice(numpy.arange(1, prob_move.count()), prob_move)
 
+lock = RLock()
 plateau=instance_painting(50,50,'plateau.png')
 #run_ant(plateau, (255,0,0), (255,0,0), (0.3,0.3,0.3), 0.5, 1)
-print(neighbour_pixel_location(plateau.size, (Direction.TOP, 49, 49)))
+thread_1 = Thread(target=run_ant, args=(plateau, (255,0,0), (255,0,0), (0.3,0.3,0.3), 0.5, 1, lock,))
+thread_2 = Thread(target=run_ant, args=(plateau, (0,255,0), (0,255,0), (0.3,0.3,0.3), 0.5, 1, lock,))
+thread_3 = Thread(target=run_ant, args=(plateau, (0,0,255), (0,0,255), (0.3,0.3,0.3), 0.5, 1, lock,))
+
+thread_1.start()
+thread_2.start()
+thread_3.start()
+
+thread_1.join()
+thread_2.join()
+thread_3.join()
+
+Image.show(plateau)
