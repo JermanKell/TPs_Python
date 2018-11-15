@@ -1,6 +1,7 @@
 from PIL.Image import *
 import PIL.Image
 import numpy
+from AntClass import Direction
 from threading import Thread
 
 def instance_painting(x, y, name_image):
@@ -13,18 +14,18 @@ def luminance(affinity_color, color_pixel):
     lum_pixel = 0.2426*color_pixel[0]+0.7152*color_pixel[1]+0.0722*color_pixel[2]
     return abs(lum_affinity-lum_pixel)
 
-def location_pixel_start(weight_painting, height_painting):
+def location_ant_start(weight_painting, height_painting):
     pixel_start = (0, 0)
     # 0=top, 1=bot, 2=left, 3=right
     border = numpy.random.randint(0, 4)
     if border == 0:
-        return numpy.random.randint(0, weight_painting), 0
+        return Direction.BOT, numpy.random.randint(1, weight_painting-1), 0
     elif border == 1:
-        return numpy.random.randint(0, weight_painting), height_painting - 1
+        return Direction.TOP, numpy.random.randint(1, weight_painting-1), height_painting - 1
     elif border == 2:
-        return 0, numpy.random.randint(0, height_painting - 1)
+        return Direction.RIGHT, 0, numpy.random.randint(1, height_painting - 1)
     elif border == 3:
-        return weight_painting - 1, numpy.random.randint(0, height_painting)
+        return Direction.LEFT, weight_painting - 1, numpy.random.randint(1, height_painting-1)
 
 def color_pixel_3x3(painting, location_pixel, color):
     (weight, height) = painting.size
@@ -56,14 +57,44 @@ def color_pixel_3x3(painting, location_pixel, color):
     #color the pixels
     for x in range(x_loop[0], x_loop[1]):
         for y in range(y_loop[0], y_loop[1]):
-            print(x_pixel+x, y_pixel+y)
             painting.putpixel((x_pixel + x, y_pixel + y), color)
+
+def neighbour_pixel_location(painting_size, ant_location):
+    ant_direction = ant_location[0]
+    weight_painting = painting_size[0]
+    height_painting = painting_size[1]
+    ant_x = ant_location[1]
+    ant_y = ant_location[2]
+
+    if ant_direction.TOP:
+        pixel_right_neighbour = (ant_x + 1) % weight_painting, ant_y
+        pixel_left_neighbour = (ant_x - 1) % weight_painting, ant_y
+        pixel_ahead_neighbour = ant_x, (ant_y - 1) % height_painting
+    elif ant_direction.BOT:
+        pixel_right_neighbour = (ant_x - 1) % weight_painting, ant_y
+        pixel_left_neighbour = (ant_x + 1) % weight_painting, ant_y
+        pixel_ahead_neighbour = ant_x, (ant_y + 1) % height_painting
+    elif ant_direction.RIGHT:
+        pixel_right_neighbour = ant_x, (ant_y + 1) % height_painting
+        pixel_left_neighbour = ant_x, (ant_y - 1) % height_painting
+        pixel_ahead_neighbour = (ant_x + 1) % weight_painting, ant_y
+    elif ant_direction.LEFT:
+        pixel_right_neighbour = ant_x, (ant_y - 1) % height_painting
+        pixel_left_neighbour = ant_x, (ant_y + 1) % height_painting
+        pixel_ahead_neighbour = (ant_x - 1) % weight_painting, ant_y
+
+    return pixel_left_neighbour, pixel_right_neighbour, pixel_ahead_neighbour
 
 
 def run_ant(painting, write_color, follow_color, prob_move, prob_follow_color, nb_step):
-    pixel_start = location_pixel_start(painting.size[0], painting.size[1])
-    #print(pixel_start)
+    location_pixel = location_ant_start(painting.size[0], painting.size[1])
+    print(location_pixel)
+    color_pixel_3x3(plateau, (location_pixel[1], location_pixel[2]), (30, 120, 100))
+    Image.show(plateau)
+
+
     #for i in range(nb_step):
+
     #    seuil = True
 
         #Déterminer si couleur d'attirance correspond au seuil
@@ -73,7 +104,5 @@ def run_ant(painting, write_color, follow_color, prob_move, prob_follow_color, n
     #        direction = numpy.random.choice(numpy.arange(1, prob_move.count()), prob_move)
 
 plateau=instance_painting(50,50,'plateau.png')
-run_ant(plateau, (255,0,0), (255,0,0), (0.3,0.3,0.3), 0.5, 1)
-location = location_pixel_start(50, 50)
-color_pixel_3x3(plateau, location, (230, 120, 0))
-Image.show(plateau)
+#run_ant(plateau, (255,0,0), (255,0,0), (0.3,0.3,0.3), 0.5, 1)
+print(neighbour_pixel_location(plateau.size, (Direction.TOP, 49, 49)))
