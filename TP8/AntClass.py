@@ -5,3 +5,8 @@ class Direction(Enum):
     BOT = 2
     RIGHT = 3
     LEFT = 4
+
+class Turn(Enum):
+    LEFT = 0
+    RIGHT = 1
+    AHEAD = 2
