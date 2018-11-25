@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+#Exercice5b
 fruits = 'Orange', 'Cherry', 'Blueberry', 'Apple'
 nb_morceaux = [171, 144, 423, 272]
 couleurs_fruits = ['orange', 'red', 'blue', 'yellow']

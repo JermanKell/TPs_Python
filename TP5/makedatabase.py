@@ -1,7 +1,7 @@
 import sqlite3
 
-def create_database():
-    conn = sqlite3.connect('database.db')
+def create_database(nom_db):
+    conn = sqlite3.connect(nom_db)
     c = conn.cursor()
 
     c.execute('''CREATE TABLE if not exists Communes
@@ -15,8 +15,8 @@ def create_database():
     conn.commit()
     conn.close()
 
-def fill_database():
-    conn = sqlite3.connect('database.db')
+def fill_database(nom_db):
+    conn = sqlite3.connect(nom_db)
     c = conn.cursor()
 
     file_name = '''bdd/communes.csv'''
@@ -74,6 +74,7 @@ def sum_total_pop_department():
     for row in c:
         print(row)
     c.close()
+    conn.close()
 
 def sum_total_pop_region():
     conn = sqlite3.connect('database.db')
@@ -82,6 +83,7 @@ def sum_total_pop_region():
     for row in c:
         print(row)
     c.close()
+    conn.close()
 
 def list_department_com():
     conn = sqlite3.connect('database.db')
@@ -90,9 +92,10 @@ def list_department_com():
     for row in c:
         print(row)
     c.close()
+    conn.close()
 
-def modify_database():
-    conn = sqlite3.connect('database.db')
+def modify_database(nom_db):
+    conn = sqlite3.connect(nom_db)
     c = conn.cursor()
     c.execute('''CREATE TABLE if not exists NouvellesRegions
                  (code_nouv_reg integer, lib_geo text)''')
@@ -108,6 +111,7 @@ def modify_database():
             data_array = line.split(";")
             if len(data_array[0]) > 0:
                 if data_array[0].__eq__('REG'):
+                    print(data_array[1], data_array[2])
                     c.execute("insert into NouvellesRegions values (?, ?)", (data_array[1], data_array[2]))
     file.close()
 
@@ -130,20 +134,16 @@ def modify_database():
                     departements_updated.append(data_array[2])
     file.close()
 
+    conn.commit()
+    conn.close()
+
+def new_sum_pop():
+    conn = sqlite3.connect('database2.db')
+    c = conn.cursor()
     c.execute('SELECT NouvellesRegions.code_nouv_reg, lib_geo, SUM(pop_tot) FROM NouvellesRegions '
               'INNER JOIN Departements on Departements.code_nouv_reg = NouvellesRegions.code_nouv_reg '
               'INNER JOIN Communes on Communes.code_dpt = Departements.code_dpt GROUP BY NouvellesRegions.code_nouv_reg')
     for row in c:
         print(row)
     c.close()
-
-    conn.commit()
     conn.close()
-
-
-create_database()
-fill_database()
-#sum_total_pop_department()
-#sum_total_pop_region()
-#list_department_com()
-modify_database()

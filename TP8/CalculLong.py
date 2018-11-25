@@ -17,6 +17,7 @@ if __name__ == "__main__":
     thread_4 = Thread(target = calcul_long, args=("thread4 ",))
 
     print("Début des calculs utilisant les threads")
+    start_time = time.time()
 
     thread_1.start()
     thread_2.start()
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     thread_3.join()
     thread_4.join()
 
-    print("\nFin des calculs utilisant les threads\n")
+    print("\nFin des calculs utilisant les threads.\nTemps tot= %.2f sec" %(time.time() - start_time),"\n")
 
     time.sleep(1)
 
@@ -39,6 +40,7 @@ if __name__ == "__main__":
     process_4 = Process(target = calcul_long, args=("process4 ",))
 
     print("Début des calculs utilisant les process")
+    start_time = time.time()
 
     process_1.start()
     process_2.start()
@@ -50,4 +52,4 @@ if __name__ == "__main__":
     process_3.join()
     process_4.join()
 
-    print("\nFin des calculs utilisant les process")
+    print("\nFin des calculs utilisant les process.\nTemps tot= %.2f sec" %(time.time() - start_time))

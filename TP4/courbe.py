@@ -1,13 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Exercice1
 matrice_random = np.random.rand(100)
 plt.plot(matrice_random, label='aléatoire')
 
 matrice_constante = np.linspace(0, 1, 100)
 plt.plot(matrice_constante, label='constante', linestyle='dashed', linewidth=1)
 
-
+#Exercice 2, 3, 4
 points = 100    #nb de points
 f = 2    #nb de cycle sinusoidal
 matrice_compteur = np.arange(points)

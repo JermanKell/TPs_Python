@@ -4,19 +4,19 @@ from scipy.optimize import curve_fit
 from scipy.misc import imresize
 from scipy.ndimage import rotate
 
-#1
+#Exercice1
 tab = np.random.randint(low=-10, high=11, size=(4, 3, 2))
 print('nombre de dimensions=', tab.ndim, '\ndimension=', tab.shape, '\ntaille=',
       tab.size, '\ntype des éléments=', tab.dtype, '\ntaille des éléments=', tab.itemsize,
       '\ndonnées=', tab.data)
 
-#2
+#Exercice2
 mat1 = np.arange(9).reshape(3, 3)
 mat2 = np.arange(2, 11).reshape(3, 3)
 matProd = np.dot(mat1, mat2)
 matTranspos = np.transpose(matProd)
 
-#3
+#Exercice3
 mat = np.array([(1,2,3), (0,1,4), (5,6,0)])
 det = np.linalg.det(mat)
 mat_inv = np.linalg.inv(mat)
@@ -24,7 +24,7 @@ one = np.transpose(np.ones(3))
 mat_sol = np.linalg.solve(mat_inv, one)
 val_propre, vec_propre = np.linalg.eig(mat)
 
-#4
+#Exercice4
 def func(x, a, b, c):
     return a * np.exp(-b * x) + c
 xdata = np.linspace(0, 4, 50)
@@ -41,7 +41,7 @@ plt.ylabel('y')
 plt.legend()
 plt.show()
 
-#5
+#Exercice5
 image = plt.imread('PyMeme.jpg', format='jpg')
 fig, ax = plt.subplots(2, 2)
 
